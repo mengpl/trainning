@@ -1,5 +1,4 @@
-practice
+trainning
 ========
 
-some practice for socket and thread
-add log4cxx
+some trainning for basic C++ programming skills
