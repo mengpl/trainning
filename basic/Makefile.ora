@@ -1,0 +1,26 @@
+
+objects = connect_oracle aiotl_connect
+SUFFIX=
+
+CC = g++
+
+CPPFLAGS =  -O2 -fpic -ftemplate-depth-64  -m64 -ggdb  
+# CPPFLAGS =  -g  
+
+#编译OCI程序时所用到的头文件路径   
+INCLUDE_PATH = -I ${ORACLE_HOME}/rdbms/public -I $(OB_REL)/include/ -I $(OB_REL)/include/3rd/otl -I .
+#编译OCI程序时所用到的静态链接库路径   
+LIB_PATH = -L${ORACLE_HOME}/lib/       
+#编译OCI程序时所用到的静态链接库     
+LIBS = -lclntsh   
+
+.PHONY:all
+	
+all:$(objects) 
+
+$(objects):%$(SUFFIX):%.cpp 
+	$(CC)  $< $(CPPFLAGS) ${INCLUDE_PATH}  ${LIBS} ${LIB_PATH} -o  $@    
+
+.PHONY:clean
+clean:     
+	rm -f ./core* ${objects}  
