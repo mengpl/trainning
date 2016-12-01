@@ -257,7 +257,7 @@ CNode * cross_link(CNode *pHead1,CNode* pHead2)
 
     if(p1 != p2)
     {
-        //尾节点不同，说明一定不想交
+        //尾节点不同，说明一定不相交
         return NULL;
     }
 
@@ -275,7 +275,7 @@ CNode * cross_link(CNode *pHead1,CNode* pHead2)
     }
     else
     {
-        // 把长的追一段
+        // 把短的追一段
         for(int i = 0; i < count2-count1; ++i)
         {
             p2 = p2->next; 
