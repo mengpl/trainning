@@ -1,0 +1,32 @@
+
+CC = g++
+CPPFLAGS = -O2 -fpic -ftemplate-depth-64  -m64 -g
+CPPMICRO =
+SUFFIX = 
+USE_LIB =  -lrt 
+BUILD_PATH = ./build
+MAKE_DIR = mkdir -p 
+LOC_LIB = $(HOME)/workspace/git_code/lib
+
+sharedLib = libsocketD.so libthreadpoolD.so
+
+target = server.exe
+
+.PHONY:all
+
+all:$(target)
+
+path_sharedLib = $(addprefix $(LOC_LIB)/,$(sharedLib))
+
+$(target):%.exe:%.cpp
+	$(MAKE_DIR) $(BUILD_PATH) $(dir $<)
+	$(CC) $(CPPFLAGS) $(CPPMICRO) $< $(USE_LIB) ${path_sharedLib} -o $(BUILD_PATH)/$@
+
+.PHONY:install
+install:all 
+	$(MAKE_DIR) $(LOC_LIB)
+	cp -rpf  $(BUILD_PATH)/lib*D.so $(LOC_LIB)/
+	
+.PHONY:clean
+clean:
+	 rm -rf $(BUILD_PATH)/$(target)

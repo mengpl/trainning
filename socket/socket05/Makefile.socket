@@ -1,0 +1,35 @@
+
+CC = g++
+CPPFLAGS = -O2 -fpic -ftemplate-depth-64  -m64 -g
+CPPMICRO =
+SUFFIX = 
+USE_LIB =  -lrt 
+BUILD_PATH = ./build
+MAKE_DIR = mkdir -p 
+LOC_LIB = $(HOME)/workspace/git_code/lib
+
+objects = CSocket.o
+sharedLib = libsocketD.so
+
+.PHONY:all
+
+all:$(sharedLib)
+
+path_objects = 	$(addprefix $(BUILD_PATH)/,$(objects))
+
+$(sharedLib):$(objects)
+	$(CC) -shared $(path_objects) $(USE_LIB) -o $(BUILD_PATH)/$@
+	$(MAKE_DIR) $(LOC_LIB)	
+	cp -prf $(BUILD_PATH)/$(sharedLib) $(LOC_LIB)/
+$(objects):%.o:%.cpp
+	$(MAKE_DIR) $(BUILD_PATH) $(dir $<)
+	$(CC) $(CPPFLAGS) $(CPPMICRO) -c $< $(USE_LIB) -o $(BUILD_PATH)/$@
+
+.PHONY:install
+install:all 
+	$(MAKE_DIR) $(LOC_LIB)
+	cp -rpf  $(BUILD_PATH)/$(sharedLib) $(LOC_LIB)/
+	
+.PHONY:clean
+clean:
+	 rm -rf $(path_objects) $(BUILD_PATH)/$(sharedLib)

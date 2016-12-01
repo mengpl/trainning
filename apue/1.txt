@@ -1,0 +1,1 @@
+/creat/close/lseek/read/write and so on  functions
