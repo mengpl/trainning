@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <iostream>
+#include "base_test.h"
 
 void sizoffunc(char str[100])
 {
@@ -223,12 +220,6 @@ void test_chose()
     }
 }
 
-struct CNode
-{
-    CNode * next;
-    CNode * pre;
-    int value;
-};
 
 CNode * cross_link(CNode *pHead1,CNode* pHead2)
 {
@@ -468,26 +459,3 @@ void write_test()
     write_to_text_file();
 }
 */
-int main(int argc,char** argv)
-{
-    
-    // test_sizeof();
-
-    // test_strlen();
-
-    // test_memory();
-    
-    // test_trans();
-    
-    // test_class();
-    
-    // test_strcpy();
-    
-    // test_bubbleSort();
-    
-    // test_chose();
-    
-    // test_link();
-
-    return 0;
-}
