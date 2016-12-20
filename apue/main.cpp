@@ -6,7 +6,7 @@ int main(void)
 {
     // file_io_test();
     
-    test_fork();
+    test_system();
 
     return 0;
 }

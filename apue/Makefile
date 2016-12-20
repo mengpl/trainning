@@ -9,7 +9,7 @@ MAKE_DIR = mkdir -p
 ##需要用户填写的内容
 DEST=test_apue
 DEST_TYPE=BIN
-DEST_SOURCES=iotest.cpp processtest.cpp linuxtest.cpp
+DEST_SOURCES=iotest.cpp processtest.cpp main.cpp
 USER_DEFS=
 LINK_USER_LIB= 
 LINK_SYS_LIB= 
