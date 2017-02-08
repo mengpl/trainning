@@ -1,7 +1,7 @@
 #include <errno.h>
 #include "config.h"
 
-namespace remote_file_edit
+namespace webserver
 {
     void CReadConfig::init_config(string strFile)
     {

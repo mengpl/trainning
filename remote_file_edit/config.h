@@ -5,7 +5,7 @@
 #include "log_define.h"
 
 using namespace std;
-namespace remote_file_edit
+namespace webserver
 {
     class CReadConfig
     {
