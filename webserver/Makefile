@@ -17,7 +17,7 @@ DEST=webserver
 # type BIN or DLL
 DEST_TYPE=BIN
 # need compile files like *.cpp
-DEST_SOURCES=main.cpp config.cpp base_socket.cpp web_client.cpp web_server.cpp 
+DEST_SOURCES=config.cpp base_socket.cpp web_buffer.cpp web_client.cpp web_server.cpp main.cpp
 # some micro user define
 USER_DEFS=
 # some lib need link

@@ -42,7 +42,16 @@ namespace webserver
                         continue;
                     CWebClientMap::iterator itMap = m_mapClient.find(events[i].data.fd);
                     if(itMap != m_mapClient.end())
-                        itMap->second->web_client_receive();
+                    {
+                        int result = itMap->second->web_client_receive();
+                        if(!result)
+                            itMap->second->web_client_process();
+                    }
+                    else
+                    {
+                        log_error(-1,"can not find this fd = %d,please check!",events[i].data.fd);
+                        continue;
+                    }
                 }
             }
         }
