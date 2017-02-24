@@ -8,6 +8,8 @@ namespace webserver
         
         m_sBaseSocket.set_reuseAddr(m_iFd);
         log_info(" a new client conncted ip %s, port %d",m_sIp.m_szBuffer,m_iPort);
+
+        return 0;
     }
 
     int CWebClient::web_client_receive()
@@ -29,9 +31,22 @@ namespace webserver
         return nBytes;
     }
 
+    int CWebClient::_process_request()
+    {
+        if(!strncmp(m_sRequest.data.m_szBuffer,"GET ",4))
+        {
+            return 0;
+        }
+
+        return 0;
+    }
+
     int CWebClient::web_client_process()
     {
-        int code = 200;   //设置返回码
-        int what_to_do = 
+        int code = 500;   //设置返回码
+        int type = _process_request();
+
+        return 0;
     }
+
 }

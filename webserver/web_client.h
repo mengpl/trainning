@@ -14,6 +14,13 @@ namespace webserver
     #define ORIGIN_MAX 1024
     #define IP_CHAR_LENGTH 40
 
+    enum web_client_mode
+    {
+        WEB_CLIENT_MODE_NORMAL      = 0 ,
+        WEB_CLIENT_MODE_FILECOPY    = 1 ,
+        WEB_CLIENT_MODE_OPTIONS     = 2
+    };
+
     class CInfo {
     public:
         CInfo():code(0){};
@@ -28,7 +35,7 @@ namespace webserver
     class CWebClient
     {
     public:
-        CWebClient():m_iPort(0),m_iFd(-1),m_sIp(CBuffer(IP_CHAR_LENGTH))
+        CWebClient():m_iPort(0),m_iFd(-1),m_sIp(CBuffer(IP_CHAR_LENGTH)),m_iMode(0)
         {
         };
         ~CWebClient(){};
@@ -37,12 +44,16 @@ namespace webserver
         int web_client_receive();
         int web_client_process();
 
+    private:
+        int _process_request();
     public:
-        int m_iFd;
-        int m_iPort;
-        CBuffer m_sIp;
-        CInfo m_sRequest;
-        CInfo m_sResponse;
+        int m_iFd;   
+        int m_iPort; 
+        int m_iMode; //模式
+        CBuffer m_sIp; // 客户的ip
+
+        CInfo m_sRequest; // 收到的客户的请求
+        CInfo m_sResponse; // 发给客户端的返回包
     private:
         CBaseSocket  m_sBaseSocket;
     };

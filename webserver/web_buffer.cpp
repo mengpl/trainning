@@ -80,6 +80,7 @@ namespace webserver
     // 预分配空间
     int CBuffer::reserve(size_t size){
         _buffer_create(size);
+        return size;
     }
 
     // append
@@ -90,10 +91,12 @@ namespace webserver
         char * buffertmp = m_szBuffer;
         _buffer_create(m_iSize);
         strcat(m_szBuffer,str);
+
+        return *this;
     }
 
     // append
     CBuffer CBuffer::append(CBuffer & cbuffer){
-        append(cbuffer.m_szBuffer);
+        return append(cbuffer.m_szBuffer);
     }
 }

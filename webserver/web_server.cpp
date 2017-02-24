@@ -1,4 +1,9 @@
+#ifdef __LINUX__
 #include <sys/epoll.h>
+#else
+#include <sys/poll.h>
+#endif
+
 #include "web_server.h"
 
 namespace webserver
@@ -6,6 +11,7 @@ namespace webserver
     #define OPEN_MAX 100
     int CWebServer::waitfor_clients()
     {
+#ifdef __LINUX__
         struct epoll_event ev,events[20];
         int epfd = epoll_create(OPEN_MAX);
 
@@ -57,6 +63,82 @@ namespace webserver
         }
 
         close(m_iListenFd);
+#else
+        struct pollfd clientfds[OPEN_MAX];
+        clientfds[0].fd = m_iListenFd;
+        clientfds[0].events = POLLIN;
+
+        for (int i = 1; i < OPEN_MAX; i++)
+        {
+            clientfds[i].fd= -1;
+        }
+
+        int nReady ;
+        int max_fd = 0;
+        bool bFull = false;
+        int i ;
+        while(1)
+        {
+            nReady =  poll(clientfds,max_fd+1,-1);
+            if(nReady == FAIL)
+            {
+                log_error(-1," poll fail ...");
+                break;
+            }
+
+            if(clientfds[0].revents & POLLIN)
+            {
+                for (i = 1; i < OPEN_MAX; i++)
+                {
+                    if(clientfds[i].fd < 0)
+                    {
+                        CWebClient * pClient = new CWebClient();
+                        pClient->web_client_create(m_iListenFd);
+
+                        clientfds[i].fd = pClient->m_iFd;
+                        clientfds[i].events = POLLIN;
+                        m_mapClient.insert(std::make_pair(pClient->m_iFd,pClient));
+                        bFull = false;
+                        break;
+                    }
+                }
+
+                if(bFull)
+                {
+                    log_error(-1," too many clients task is full!");
+                    continue;
+                }
+                
+                max_fd = i > max_fd ? i : max_fd;
+
+                if(--nReady < 0)
+                    continue;
+            }
+
+            for (int i = 1; i < max_fd; i++)
+            {
+                if(clientfds[i].fd < 0)
+                    continue;
+                if(clientfds[i].revents & POLLIN)
+                {
+                    CWebClientMap::iterator itMap = m_mapClient.find(clientfds[i].fd);
+                    if(itMap != m_mapClient.end())
+                    {
+                        int result = itMap->second->web_client_receive();
+                        if(!result)
+                            itMap->second->web_client_process();
+                    }
+                    else
+                    {
+                        log_error(-1,"can not find this fd = %d,please check!",clientfds[i].fd);
+                        continue;
+                    }
+                }
+            }
+        }
+        close(m_iListenFd);
+#endif
+    return 0;
     }
 
 }
