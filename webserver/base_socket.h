@@ -26,7 +26,7 @@ namespace webserver
         int write(int fd, char *buf, int count);
         int read(int fd, char *buf, int count);
 
-        int set_reuseAddr(int fd);
+        int set_reuseAddr(int fd);  
     };
 
 }

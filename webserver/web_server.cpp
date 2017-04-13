@@ -115,7 +115,7 @@ namespace webserver
                     continue;
             }
 
-            for (int i = 1; i < max_fd; i++)
+            for (int i = 1; i <= max_fd; i++)
             {
                 if(clientfds[i].fd < 0)
                     continue;
@@ -125,8 +125,16 @@ namespace webserver
                     if(itMap != m_mapClient.end())
                     {
                         int result = itMap->second->web_client_receive();
-                        if(!result)
+                        if(result > 0)
+                        {
                             itMap->second->web_client_process();
+                        }
+                        else
+                        {
+                            close(clientfds[i].fd);
+                            clientfds[i].fd = -1;
+                            m_mapClient.erase(itMap);
+                        }ß
                     }
                     else
                     {
