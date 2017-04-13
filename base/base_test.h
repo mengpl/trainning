@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <iostream>
+#include <bitset>
 
 /*
 c_test.cpp
@@ -33,6 +34,7 @@ CNode * cross_link(CNode *pHead1,CNode* pHead2);
 bool cycle_link(CNode * pHead);
 void test_link();
 
+int test_aes();
 
 /*
 c_puzzle.cpp

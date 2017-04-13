@@ -3,7 +3,7 @@
 int main(int argc,char** argv)
 {
     
-    test_sizeof();
+    // test_sizeof();
 
     // test_strlen();
 
@@ -21,5 +21,6 @@ int main(int argc,char** argv)
     
     // test_link();
 
+    test_aes();
     return 0;
 }

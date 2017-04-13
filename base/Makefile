@@ -9,11 +9,11 @@ MAKE_DIR = mkdir -p
 ##需要用户填写的内容
 DEST=base_test
 DEST_TYPE=BIN
-DEST_SOURCES=main.cpp c_test.cpp
+DEST_SOURCES=main.cpp aes.cpp
 USER_DEFS= 
 LINK_USER_LIB= 
 LINK_SYS_LIB= 
-LIB_PATH = $(NDB_HOME)/lib
+# LIB_PATH = $(NDB_HOME)/lib
 INCLUDE_PATH = ./ \
 		$(NDB_HOME)/include \
 		$(ORACLE_HOME)/rdbms/public \
