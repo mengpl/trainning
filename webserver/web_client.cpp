@@ -23,6 +23,10 @@ namespace webserver
             log_info("recive from client size : %zd",nBytes);
             log_info("recive from client : %s",m_sRequest.data.m_szBuffer);
         }
+        else if(nBytes == 0)
+        {
+            log_info("client may be closed ip %s, port %d",m_sIp.m_szBuffer,m_iPort);
+        }
         else
         {
             log_info("recive data fail! from client : %s",m_sIp.m_szBuffer);
@@ -31,20 +35,19 @@ namespace webserver
         return nBytes;
     }
 
-    int CWebClient::_process_request()
-    {
-        if(!strncmp(m_sRequest.data.m_szBuffer,"GET ",4))
-        {
-            return 0;
-        }
-
-        return 0;
-    }
-
     int CWebClient::web_client_process()
     {
-        int code = 500;   //设置返回码
-        int type = _process_request();
+        log_info(" begin web client process ");
+
+        if(strncmp(m_sRequest.data.m_szBuffer,"GET ",4))
+        {
+            m_iAction = WEB_CLIENT_PREDICATION_GET;
+            
+        }
+        else if(strncmp(m_sRequest.data.m_szBuffer,"OPTIONS ",8))
+        {
+            m_iAction = WEB_CLIENT_PREDICATION_OPTION;
+        }
 
         return 0;
     }
