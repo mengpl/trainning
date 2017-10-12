@@ -35,36 +35,18 @@ namespace webserver
         return nBytes;
     }
 
-    int CWebClient::_check_request()
+    int CWebClient::web_client_process()
     {
+        log_info(" begin web client process ");
+
         if(strncmp(m_sRequest.data.m_szBuffer,"GET ",4))
         {
             m_iAction = WEB_CLIENT_PREDICATION_GET;
-            m_iMode = WEB_CLIENT_MODE_NORMAL;
-
+            
         }
         else if(strncmp(m_sRequest.data.m_szBuffer,"OPTIONS ",8))
         {
             m_iAction = WEB_CLIENT_PREDICATION_OPTION;
-            m_iMode = WEB_CLIENT_MODE_OPTIONS;
-        }
-
-        return 0;
-    }
-
-    int CWebClient::web_client_process()
-    {
-        int code = 500;   //设置返回码
-        int type = _check_request();
-
-        if(_check_request())
-        {
-            log_error(-1," check request fail !");
-            return FAIL;
-        }
-
-        if(m_iMode == WEB_CLIENT_MODE_GET) {
-            code = 200;
         }
 
         return 0;

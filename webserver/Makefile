@@ -17,13 +17,13 @@ DEST=webserver
 # type BIN or DLL
 DEST_TYPE=BIN
 # need compile files like *.cpp
-DEST_SOURCES=config.cpp base_socket.cpp web_buffer.cpp web_client.cpp web_server.cpp main.cpp
+DEST_SOURCES=config.cpp base_socket.cpp web_buffer.cpp web_client.cpp web_server.cpp
 # some micro user define
-USER_DEFS=
+USER_DEFS= __LINUX__
 # some lib need link
 LINK_USER_LIB= 
 # some system lib need link
-LINK_SYS_LIB= 
+LINK_SYS_LIB=  -lrt
 # lib path  
 LIB_PATH = $(NDB_HOME)/lib
 # include path

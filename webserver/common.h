@@ -3,6 +3,7 @@
 
 namespace web_server
 {
+    #define EPOLL_OPEN_MAX 1024
 
     static inline uint32_t simple_hash(const char *name) 
     {

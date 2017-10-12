@@ -8,12 +8,12 @@
 
 namespace webserver
 {
-    #define OPEN_MAX 100
+    
     int CWebServer::waitfor_clients()
     {
 #ifdef __LINUX__
         struct epoll_event ev,events[20];
-        int epfd = epoll_create(OPEN_MAX);
+        int epfd = epoll_create(EPOLL_OPEN_MAX);
 
         ev.data.fd = m_iListenFd;
         ev.events = EPOLLIN;
@@ -40,7 +40,7 @@ namespace webserver
                     ev.events=EPOLLIN;
                     epoll_ctl(epfd,EPOLL_CTL_ADD,pClient->m_iFd,&ev);
 
-                    m_mapClient.insert(std::make_pair(pClient->m_iFd,pClient));
+                    m_mapClient.insert(MAKE_PAIR(pClient->m_iFd,pClient));
                 }
                 else if(events[i].events&EPOLLIN)
                 {
@@ -134,7 +134,7 @@ namespace webserver
                             close(clientfds[i].fd);
                             clientfds[i].fd = -1;
                             m_mapClient.erase(itMap);
-                        }ß
+                        }
                     }
                     else
                     {
@@ -149,4 +149,22 @@ namespace webserver
     return 0;
     }
 
+}
+
+int main(int argc, char** argv )
+{
+    using namespace webserver;
+    //init config
+    CReadConfig cConfig("webserver.conf");
+    string strPort = cConfig.read_config("port");
+    int iPort = atoi(strPort.c_str());
+    char localaddr[40] = "127.0.0.1";
+    int backlog = 10;
+    //listen
+    CWebServer cWebServer;
+    cWebServer.m_iListenFd = cWebServer.create_server(iPort,localaddr,backlog);
+
+    int iRet = cWebServer.waitfor_clients();
+
+    
 }
