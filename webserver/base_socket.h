@@ -1,34 +1,94 @@
-#ifndef __BASE_SOCKET_H__
-#define __BASE_SOCKET_H__
-#include <sys/socket.h>
-#include <netdb.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+/*
+ *  a wrap for non-block socket class for Windows, LINUX and MacOS X platform
+ */
+
+#ifndef __SOCKET_H__
+#define __SOCKET_H__
+
+#include "os_type.h"
+#include "util.h"
 #include "log_define.h"
 
-namespace webserver
+using namespace std;
+enum
 {
-    #define OK 0
-    #define FAIL -1
+	SOCKET_STATE_IDLE,
+	SOCKET_STATE_LISTENING,
+	SOCKET_STATE_CONNECTING,
+	SOCKET_STATE_CONNECTED,
+	SOCKET_STATE_CLOSING
+};
 
-    class CBaseSocket
-    {
-    public:
-        CBaseSocket(){};
-        ~CBaseSocket(){};
-    public:
-        int create_server(int port, char *bindaddr, int backlog);
-        int connect(char *addr, int port);
-        int accept(int serversock, char *ip, size_t ip_len, int *port);
-        int write(int fd, char *buf, int count);
-        int read(int fd, char *buf, int count);
+class CBaseSocket : public CRefObject
+{
+public:
+	CBaseSocket();
+	
+	virtual ~CBaseSocket();
 
-        int set_reuseAddr(int fd);  
-    };
+	SOCKET GetSocket() { return m_socket; }
+	void SetSocket(SOCKET fd) { m_socket = fd; }
+	void SetState(uint8_t state) { m_state = state; }
 
-}
+	void SetCallback(callback_t callback) { m_callback = callback; }
+	void SetCallbackData(void* data) { m_callback_data = data; }
+	void SetRemoteIP(char* ip) { m_remote_ip = ip; }
+	void SetRemotePort(uint16_t port) { m_remote_port = port; }
+	void SetSendBufSize(uint32_t send_size);
+	void SetRecvBufSize(uint32_t recv_size);
 
-#endif // !__BASE_SOCKET_H__
+	const char*	GetRemoteIP() { return m_remote_ip.c_str(); }
+	uint16_t	GetRemotePort() { return m_remote_port; }
+	const char*	GetLocalIP() { return m_local_ip.c_str(); }
+	uint16_t	GetLocalPort() { return m_local_port; }
+public:
+	int Listen(
+		const char*		server_ip, 
+		uint16_t		port,
+		callback_t		callback,
+		void*			callback_data);
+
+	net_handle_t Connect(
+		const char*		server_ip, 
+		uint16_t		port,
+		callback_t		callback,
+		void*			callback_data);
+
+	int Send(void* buf, int len);
+
+	int Recv(void* buf, int len);
+
+	int Close();
+
+public:	
+	void OnRead();
+	void OnWrite();
+	void OnClose();
+
+private:	
+	int _GetErrorCode();
+	bool _IsBlock(int error_code);
+
+	void _SetNonblock(SOCKET fd);
+	void _SetReuseAddr(SOCKET fd);
+	void _SetNoDelay(SOCKET fd);
+	void _SetAddr(const char* ip, const uint16_t port, sockaddr_in* pAddr);
+
+	void _AcceptNewSocket();
+
+private:
+	string			m_remote_ip;
+	uint16_t		m_remote_port;
+	string			m_local_ip;
+	uint16_t		m_local_port;
+
+	callback_t		m_callback;
+	void*			m_callback_data;
+
+	uint8_t			m_state;
+	SOCKET			m_socket;
+};
+
+CBaseSocket* FindBaseSocket(net_handle_t fd);
+
+#endif
